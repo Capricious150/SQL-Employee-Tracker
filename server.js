@@ -1,45 +1,12 @@
 const express = require('express');
+const mysql = require('mysql2');
+
 const app = express();
+const PORT = process.env.PORT || 3001;
 
+app.use(express.urlencoded({ extended: false }));
+app.use(express.json());
 
-const mainMenuArray = [
-    "View all Departments",
-    "View all Roles",
-    "View all Employees",
-    "Add a Department",
-    "Add a Role",
-    "Add an Employee",
-    "Update Employeen Role"
-];
-
-const inquireObject = {
-    mainMenu: [
-        {
-            type: 'list',
-            name: "mainMenu",
-            message: "Select an Option",
-            choices: mainMenuArray
-        }
-],
-    addDepartment: [
-        {
-            type: 'input',
-            name: 'id',
-            message: 'Enter Department ID'        
-        },
-        {
-            type: 'input',
-            name: 'name',
-            message: 'Enter Department Name'
-        }
-],
-    addRole: {
-
-    },
-    addEmployee: {
-
-    },
-    updateEmployee: {
-
-    }
-};
+app.listen(PORT, () => {
+    console.log(`Listening on ${PORT}`)
+});
