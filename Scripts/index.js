@@ -1,5 +1,8 @@
 const inquirer = require('inquirer');
 
+const departmentArray = [];
+const roleArray = [];
+const employeeArray = [];
 
 const mainMenuArray = [
     "View all Departments",
@@ -19,26 +22,62 @@ const inquireObject = {
             message: "Select an Option",
             choices: mainMenuArray
         }
-],
+    ],
     addDepartment: [
-        {
-            type: 'input',
-            name: 'id',
-            message: 'Enter Department ID'        
-        },
         {
             type: 'input',
             name: 'name',
             message: 'Enter Department Name'
         }
-],
-    addRole: {
-
-    },
-    addEmployee: {
-
-    },
-    updateEmployee: {
-
-    }
+    ],
+    addRole: [
+        {
+            type: 'input',
+            name: 'name',
+            message: 'Enter Role Name'
+        },
+        {
+            type: 'input',
+            name: 'salary',
+            message: 'Enter salary. Format: 100000 // 80000 // 240000 // etc.'
+        },
+        {
+            type: 'list',
+            name: 'roleDepartment',
+            message: 'Which department is this role being added to?',
+            choices: departmentArray
+        }
+    ],
+    addEmployee: [
+        {
+            type: 'input',
+            name: 'fName',
+            message: 'Enter the first name of the employee'
+        },
+        {
+            type: 'input',
+            name: 'lName',
+            message: 'Enter the last name of the employee'
+        },
+        {
+            type: 'list',
+            name: 'employeeRole',
+            message: 'What is the role of this employee?',
+            choices: roleArray
+        }
+    ],
+    updateEmployee: [
+        {
+            type: 'list',
+            name: 'employeeSelect',
+            message: 'Which employee are you updating?',
+            choices: employeeArray
+        },
+        {
+            type: 'list',
+            name: 'employeeRole',
+            message: 'What is the new role of this employee?',
+            choices: roleArray
+        }
+    ]
 };
