@@ -81,3 +81,27 @@ const inquireObject = {
         }
     ]
 };
+
+const getAllEmployees = () =>
+    fetch('/employees', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+          },
+    })
+
+const getAllRoles = () => 
+    fetch('/roles', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+          },
+    })
+
+const getAllDepartments = () =>
+    fetch('/departments', {
+        method: 'GET',
+        headers: {
+            'Content-Type': 'application/json',
+          },
+    })
