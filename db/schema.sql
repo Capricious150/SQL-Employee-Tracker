@@ -55,8 +55,3 @@ VALUES("Sally", "Fields", 1, 1),
 ("Maria","Paterno", 9, 10),
 ("Tracye","Wilhelm", 10, 10),
 ("Joe","Dugan", 10, 10);
-
-SELECT employee.first_name, employee.last_name, role.title, department.name, role.salary
-FROM employee
-JOIN role ON employee.role_id = role.id
-JOIN department ON role.department_id = department.id;
