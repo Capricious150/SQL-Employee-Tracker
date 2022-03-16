@@ -24,7 +24,7 @@ const db = mysql.createConnection(
       "Add a Department",
       "Add a Role",
       "Add an Employee",
-      "Update Employeen Role"
+      "Update Employeen Role",
   ];
   
   const inquireObject = {
@@ -103,6 +103,7 @@ const db = mysql.createConnection(
   
   const getAllEmployees = () =>
       {
+        console.log("=================")
         db.query('SELECT employee.first_name, employee.last_name, employee.id, role.title, department.name, role.salary FROM ((employee JOIN role ON employee.role_id = role.id) JOIN department ON role.department_id = department.id);',
         (err, results) => {
             if (err){
@@ -114,8 +115,9 @@ const db = mysql.createConnection(
         mainMenu();
       }
   
-  const getAllRoles = () => 
+  const getAllRoles = async () => 
       {
+        console.log("=================")
         db.query('SELECT role.title, role.id, department.id, role.salary FROM role JOIN department ON role.department_id = department.id;',
         (err, results) => {
             if (err){
@@ -124,11 +126,11 @@ const db = mysql.createConnection(
                 console.table(results)
             }
         })
-        mainMenu();
       }
   
   const getAllDepartments = () =>
       {
+        console.log("=================")
         db.query('SELECT * FROM department;', (err, results) => {
             if (err) {
                 console.log(err)
@@ -267,7 +269,7 @@ const mainMenu = () => {
         if (data.mainMenu === "View all Departments"){
             getAllDepartments();
         } else if (data.mainMenu === "View all Roles"){
-            getAllRoles();
+            getAllRoles().then(mainMenu());
         } else if (data.mainMenu === "View all Employees"){
             getAllEmployees();
         } else if (data.mainMenu === "Add a Department"){
@@ -280,6 +282,7 @@ const mainMenu = () => {
             updateEmployee();
         }
     })
+    console.log(`\n =================`)
 }
 
 
