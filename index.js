@@ -81,6 +81,12 @@ const db = mysql.createConnection(
               name: 'employeeRole',
               message: 'What is the role of this employee?',
               choices: roleArray
+          },
+          {
+              type: 'list',
+              name: 'employeeManager',
+              message: 'Who is this the manager of this employee?',
+              choices: employeeArray
           }
       ],
       updateEmployee: [
@@ -141,6 +147,7 @@ const primeArrays = () => {
 }
 
 const primeDepartments = () => {
+    departmentArray = [];
     db.query('SELECT department.name FROM department', (err, results) => 
     {
         if (err){
@@ -154,6 +161,7 @@ const primeDepartments = () => {
 };
 
 const primeRoles = () => {
+    roleArray = [];
     db.query('SELECT role.title FROM role', (err, results) => 
     {
         if (err){
@@ -167,6 +175,7 @@ const primeRoles = () => {
 }
 
 const primeEmployees = () => {
+    employeeArray = [];
     db.query('SELECT employee.first_name, employee.last_name FROM employee', (err, results) => 
     {
         if (err){
@@ -182,22 +191,60 @@ const primeEmployees = () => {
 const addDepartment = () => {
     inquirer.prompt(inquireObject.addDepartment)
     .then((data) => {
-        
+        db.query(`INSERT INTO department(name) 
+        VALUES ('${data.name}');`,);
+        primeDepartments();
+    })
+};
+
+const addRole = () => {
+    inquirer.prompt(inquireObject.addRole)
+    .then((data) => {
+        let idInt;
+        for (let i = 0; i < departmentArray.length; i++) {
+            if (data.roleDepartment === departmentArray[i]){
+                idInt = i;
+            }
+        }
+
+        db.query(`INSERT INTO role(title, salary, department_id)
+        VALUES ('${data.name}, ${data.salary}, ${idInt}');`);
+        primeRoles();
     })
 }
+
+const addEmployee = () => {
+    inquirer.prompt(inquireObject.addEmployee)
+    .then((data) => {
+        let idInt;
+        let idInt2;
+
+        for (let i = 0; i < roleArray.length; i++) {
+            if (data.employeeRole === roleArray[i]){
+                idInt = i;
+            }            
+        }
+
+        for (let i = 0; i < employeeArray.length; i++){
+            if (data.employeeManager === employeeArray[i]){
+                idInt2 = i;
+            }
+        }
+        db.query(`INSERT INTO employee(first_name, last_name, role_id, manager_id)
+        VALUES ('${data.fName}','${data.lName}',${idInt}, ${idInt2});`,);
+        primeEmployees();
+    })
+};
 
 const mainMenu = () => {
     inquirer.prompt(inquireObject.mainMenu)
     .then((data) => {
         if (data.mainMenu === "View all Departments"){
             getAllDepartments();
-            mainMenu();
         } else if (data.mainMenu === "View all Roles"){
             getAllRoles();
-            mainMenu();
         } else if (data.mainMenu === "View all Employees"){
             getAllEmployees();
-            mainMenu();
         } else if (data.mainMenu === "Add a Department"){
             addDepartment();
         } else if (data.mainMenu === "Add a Role"){
