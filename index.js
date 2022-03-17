@@ -25,6 +25,8 @@ const db = mysql.createConnection(
       "Add a Role",
       "Add an Employee",
       "Update Employeen Role",
+      "Salary Budget Utilization",
+      "Quit"
   ];
   
   const inquireObject = {
@@ -98,6 +100,14 @@ const db = mysql.createConnection(
               message: 'What is the new role of this employee?',
               choices: roleArray
           }
+      ],
+      budgetUtilization: [
+          {
+              type: 'list',
+              name: 'departmentBudget',
+              message: 'Which department would you like to view the salary budget for?',
+              choices: departmentArray
+          }
       ]
   };
   
@@ -113,12 +123,12 @@ const db = mysql.createConnection(
             }
         })
         mainMenu();
-      }
+      };
   
   const getAllRoles = async () => 
       {
         console.log("=================")
-        db.query('SELECT role.title, role.id, department.id, role.salary FROM role JOIN department ON role.department_id = department.id;',
+        db.query('SELECT role.title, role.id, department.name, role.salary FROM role JOIN department ON role.department_id = department.id;',
         (err, results) => {
             if (err){
                 console.info(err)
@@ -126,7 +136,7 @@ const db = mysql.createConnection(
                 console.table(results)
             }
         })
-      }
+      };
   
   const getAllDepartments = () =>
       {
@@ -139,13 +149,13 @@ const db = mysql.createConnection(
             }
         })
         mainMenu();
-      }
+      };
 
 const primeArrays = () => {
     primeEmployees();
     primeRoles();
     primeDepartments();
-}
+};
 
 const primeDepartments = () => {
     departmentArray.length = 0;
@@ -173,7 +183,7 @@ const primeRoles = () => {
             }
         }
     })
-}
+};
 
 const primeEmployees = () => {
     employeeArray.length = 0;
@@ -187,7 +197,7 @@ const primeEmployees = () => {
             }
         }
     })
-}
+};
 
 const addDepartment = () => {
     inquirer.prompt(inquireObject.addDepartment)
@@ -206,6 +216,7 @@ const addRole = () => {
         for (let i = 0; i < departmentArray.length; i++) {
             if (data.roleDepartment === departmentArray[i]){
                 idInt = i + 1;
+                break
             }
         }
 
@@ -214,7 +225,7 @@ const addRole = () => {
         primeRoles();
         mainMenu();
     })
-}
+};
 
 const addEmployee = () => {
     inquirer.prompt(inquireObject.addEmployee)
@@ -225,12 +236,14 @@ const addEmployee = () => {
         for (let i = 0; i < roleArray.length; i++) {
             if (data.employeeRole === roleArray[i]){
                 idInt = i + 1;
+                break
             }            
         }
 
         for (let i = 0; i < employeeArray.length; i++){
             if (data.employeeManager === employeeArray[i]){
                 idInt2 = i + 1;
+                break
             }
         }
         db.query(`INSERT INTO employee(first_name, last_name, role_id, manager_id)
@@ -239,7 +252,6 @@ const addEmployee = () => {
         mainMenu();
     })
 };
-
 
 const updateEmployee = () => {
     inquirer.prompt(inquireObject.updateEmployee)
@@ -250,18 +262,51 @@ const updateEmployee = () => {
         for (let i = 0; i < employeeArray.length; i++) {
             if (data.employeeSelect === employeeArray[i]){
                 idInt = i + 1;
+                break
             }
         }
 
         for (let i = 0; i < roleArray.length; i++){
             if (data.employeeRole === roleArray[i]){
                 idInt2 = i + 1;
+                break
             }
         }
         db.query(`UPDATE employee SET role_id = ${idInt2} WHERE id = ${idInt};`,)
         mainMenu();
     })
-}
+};
+
+const budgetFunction = () => {
+    inquirer.prompt(inquireObject.budgetUtilization)
+    .then((data) => {
+        let idInt;
+        const setIdInt = async () => {
+        for (let i = 0; i < departmentArray.length; i++) {
+            if (data.departmentBudget === departmentArray[i]){
+                idInt = i + 1
+                break;
+            }
+        }
+    }
+        
+        setIdInt().then(
+        db.query(`SELECT department.name, SUM(salary) AS total_salaries
+        FROM employee JOIN role ON employee.role_id = role.id
+        JOIN department ON role.department_id = department.id
+        WHERE department.id = ${idInt}`, 
+        (err, results) => {
+            if (err){
+                console.log(err)
+            } else {
+                console.table(results)
+            }
+        }))
+        mainMenu();
+    })
+};
+
+const laterHaters = () => process.exit();
 
 const mainMenu = () => {
     inquirer.prompt(inquireObject.mainMenu)
@@ -280,11 +325,14 @@ const mainMenu = () => {
             addEmployee();
         } else if (data.mainMenu === "Update Employeen Role"){
             updateEmployee();
+        } else if (data.mainMenu === "Salary Budget Utilization"){
+            budgetFunction();
+        } else if (data.mainMenu === "Quit"){
+            laterHaters();
         }
     })
     console.log(`\n =================`)
 }
-
 
 const init = () => {
 primeArrays();
@@ -292,11 +340,3 @@ mainMenu();
 }
 
 init();
-
-
-// Various Function Tests ----
-// primeDepartments();
-// console.log(departmentArray);
-// getAllDepartments();
-// getAllRoles();
-// getAllEmployees();
