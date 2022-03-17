@@ -3,6 +3,7 @@
 
 ## Links and Images
 [Link to a video demo of the application](https://drive.google.com/file/d/1sc6jxlnPHCxLGczfnhpFANjHUy_6h5Xh/view)
+
 ![An image of the application main menu](/Images/MainMenuImage.png)
 ![An image of all the Roles in the database, in a nice table](/Images/ViewRoles.png)
 ![An image of the Add Employee functionality](/Images/AddEmployee.png)
