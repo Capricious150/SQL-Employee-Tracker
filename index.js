@@ -31,7 +31,7 @@ const db = mysql.createConnection(
       "Add a Department",
       "Add a Role",
       "Add an Employee",
-      "Update Employeen Role",
+      "Update Employee Role",
       "Salary Budget Utilization",
       "Quit"
   ];
@@ -336,7 +336,7 @@ const budgetFunction = () => {
     }
         
         setIdInt().then(
-        db.query(`SELECT department.name, SUM(salary) AS total_salaries
+        db.query(`SELECT department.name AS department, SUM(salary) AS total_salaries
         FROM employee JOIN role ON employee.role_id = role.id
         JOIN department ON role.department_id = department.id
         WHERE department.id = ${idInt}`, 
@@ -377,7 +377,7 @@ const mainMenu = () => {
             addRole();
         } else if (data.mainMenu === "Add an Employee"){
             addEmployee();
-        } else if (data.mainMenu === "Update Employeen Role"){
+        } else if (data.mainMenu === "Update Employee Role"){
             updateEmployee();
         } else if (data.mainMenu === "Salary Budget Utilization"){
             budgetFunction();
